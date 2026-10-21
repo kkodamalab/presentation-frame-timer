@@ -12,7 +12,8 @@
     "desktop:pack": "electron-builder --dir",
     "desktop:win": "electron-builder --win nsis portable",
     "test:electron": "node tests/electron.mjs",
-    "desktop:install": "node node_modules/electron/install.js"
+    "desktop:install": "node node_modules/electron/install.js",
+    "test:pip": "node tests/pip-browser.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0",

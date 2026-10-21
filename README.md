@@ -21,13 +21,37 @@ Canvasの**単一パスを一回だけstroke**して色面のalpha maskにしま
 
 Date.now()との差分で経過時間を算出し、requestAnimationFrameは再描画のみに使用。バックグラウンドから戻ると実時刻に追従します。OS時計の手動変更の影響は受けます。ブラウザがバックグラウンド処理を停止すると通知音は復帰時まで遅れる場合があります。音声はユーザーがSTARTを押したときに有効化し、OBSの自動開始では保証しません。
 
+## インストール不要：WEB OVERLAY（実験版）
+
+公開URLをWindowsの対応Chrome / Edgeの通常タブで開き、上部の **WEB OVERLAY（実験版）** を直接クリックするとDocument Picture-in-Pictureを開きます。拡張機能やアプリのインストールは不要です。非対応・起動拒否の場合はメッセージを表示し、そのまま通常Web版を操作できます。APIにはHTTPSまたはlocalhostとユーザー操作が必要です。
+
+1. 元タブで発表時間・色・太さ・残り時間・表示位置・不透明度・通知を設定する。
+2. **COMPACT**（中央に大きな残り時間）または **FRAME**（PiP自身の四辺ゲージ）を選ぶ。
+3. WEB OVERLAYを押し、PiPを邪魔にならない場所へ手動移動・リサイズする。
+4. 元タブのSTART / PAUSE / RESUME / RESETで操作する。設定と実時間ベースのタイマーはPiPへ即時反映される。PiP内にアプリの操作ボタンは配置しない。
+5. PiPを閉じても元タブのタイマーは継続し、再度開くと現在の経過時間を引き継ぐ。**元タブを閉じる・再読み込みすると、PiPと実行中タイマーは終了する。**
+
+PiPのSVGは既存の `perimeterPoints` と `colorAt` を共有し、左上→上→右→下→左の一本の連続パスをmaskとして使います。四つの色面は一本の線の配色であり、複数の短いゲージではありません。実際の `innerWidth` / `innerHeight` をresize/ResizeObserverで読み、SVG viewBox・パス・周長・グラデーションを再計算します。元タブと別のタイマーは作りません。PiP表示中はPiP側のrequestAnimationFrameも同じ状態を描画します。
+
+**ブラウザPiPはElectronの透明・クリック透過オーバーレイの代替にはなりません。**
+
+- FRAMEで囲むのはPiPウィンドウの外周です。Zoom / PowerPoint / デスクトップ全体の外周へ自由に一致させられる保証はありません。
+- サイズ・位置・最前面表示はOS/ブラウザが管理します。要求した初期サイズが採用されないことがあります。最大サイズ、配置、全画面との重なり、他の最前面ウィンドウとの順序には制約があります。
+- **クリック透過ではありません。** PiPが覆う場所のクリック・スクロールは背後のアプリへ届きません。ブラウザ自身のタイトルバー・戻る/閉じる操作も残ります。
+- 背景は既定で暗色です。「単色」と「透過を試す」を選択できます。透過はCSS背景を透明にする実験であり、OSが背後を透かす保証はありません。CSSの計算値がtransparentでもネイティブウィンドウが透過した証拠にはならず、自動判定は行いません。透明にならないときは暗色か単色を使ってください。
+- ゲージ/文字の不透明度を下げても、ウィンドウ全体のOS透明度は変わりません。
+- Zoomへの重ね合わせと画面共有の送信映像への合成は別です。共有映像に含まれることは保証しません。排他的フルスクリーンやUAC画面に重なる保証もありません。
+
+Chrome/Edgeの機能は実行時に検出します。Safari / FirefoxなどAPIがない環境は通常Web版へフォールバックします。Zoom・PowerPointと物理Windows PC上での実機検証は未完了です。
+検証方法と結果の範囲は [docs/web-overlay-validation.md](docs/web-overlay-validation.md) を参照してください。
+
 ## Windowsでのオーバーレイ
 
 | 方法 | 適する用途 | 制約 |
 | --- | --- | --- |
 | Electronの透明・最前面・クリック透過ウィンドウ | 発表者自身のZoom/PowerPoint画面に枠を重ねる | Electron版を同梱。実機での重なり・共有映像への含有はアプリやOSの表示方式に依存 |
 | OBS Browser Source | 配信・録画・共有映像への合成 | Zoomの通常ウィンドウに直接重なるわけではない。OBSの合成結果を共有する |
-| Document Picture-in-Picture | 小さな最前面タイマー | ブラウザ対応・サイズ・位置に制約。透明な全画面枠には不適。本アプリでは未実装 |
+| Document Picture-in-Picture | 小さな最前面タイマー | WEB OVERLAY（実験版）で実装。PiP自身の枠のみ。OS透過・クリック透過・任意配置は保証不可 |
 
 OBS用URL: `https://kkodamalab.github.io/presentation-frame-timer/?mode=obs&duration=600`
 
@@ -48,6 +72,8 @@ npm run dev
 npm test
 npx playwright install chromium
 npm run test:browser
+# PiPの実ウィンドウが必要（Linux CIではxvfb-runを使用）
+npm run test:pip
 npm run build
 ```
 
