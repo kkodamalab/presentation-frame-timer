@@ -1,1 +1,61 @@
-{"name":"presentation-frame-timer","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"node server.mjs","build":"node scripts/build.mjs","test":"node --test tests/core.test.mjs","test:browser":"node tests/browser.mjs"},"devDependencies":{"@playwright/test":"^1.56.0"}}
+{
+  "name": "presentation-frame-timer",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "node tests/browser.mjs",
+    "desktop": "electron .",
+    "desktop:pack": "electron-builder --dir",
+    "desktop:win": "electron-builder --win nsis portable",
+    "test:electron": "node tests/electron.mjs",
+    "desktop:install": "node node_modules/electron/install.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "electron": "44.9.2",
+    "electron-builder": "26.15.3"
+  },
+  "main": "electron/main.cjs",
+  "build": {
+    "appId": "lab.kkodama.presentation-frame-timer",
+    "productName": "Presentation Frame Timer",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "core.js",
+      "gauge.js",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "artifactName": "Presentation-Frame-Timer-${version}-${arch}-${target}.${ext}"
+    },
+    "nsis": {
+      "artifactName": "Presentation-Frame-Timer-Setup.exe",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "portable": {
+      "artifactName": "Presentation-Frame-Timer-Portable.exe"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "kkodamalab",
+      "repo": "presentation-frame-timer"
+    }
+  },
+  "description": "A continuous perimeter timer with a transparent Windows desktop overlay",
+  "author": "kkodamalab",
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
