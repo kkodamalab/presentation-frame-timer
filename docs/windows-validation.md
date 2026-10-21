@@ -1,7 +1,7 @@
 # 検証記録とWindows実機チェックリスト
 
 実施環境: 2026-10-21、Debian 13 Linuxクラウド、Node 24.19.0、Electron 44.9.2。
-Windows実機、Zoom、PowerPoint、プロジェクターはこの環境にありません。
+ローカル環境にはWindows実機、Zoom、PowerPoint、プロジェクターはありません。追加でGitHubのWindowsランナー上でも実際のElectron/Edgeを起動して検証しました。
 
 ## 実行済み
 
@@ -13,14 +13,22 @@ Windows実機、Zoom、PowerPoint、プロジェクターはこの環境にあ�
 - Linuxのxfwm4では画面全体サイズが1 DIP縮む挙動を観測。Linuxの統合テストのみ1 DIPの差を許容し、Windowsではboundsの完全一致を要求。
 - `node tests/linux-overlay.mjs`: 独立したChromiumプロセスの上に実際に赤いフレームを表示。XTestのOS入力で中央と左ゲージ上にそれぞれクリック/ホイールを送り、背後のChromiumで両方2件ずつ受信したことを確認。CDPで全画面を要求したが、物理Windowsの全画面テストには相当しない。
 - `npm run desktop:pack -- --publish never`: Linux用アプリパッケージ生成成功。
-- Windowsアプリ本体のクロスパッケージ生成成功。NSISインストーラーの生成はLinuxにWineがないため失敗。Windows CIの結果は別途確認が必要。
+- Windowsアプリ本体のクロスパッケージ生成成功。NSISインストーラーの生成はLinuxにWineがないため失敗。このクロスビルドの失敗と、後述のWindows CIの成功は区別しています。
 
 画像・JSONレポートは `test-results/`（Git対象外）。Windows CIでは `desktop-evidence`、Web CIでは `browser-evidence` artifactへ保存します。
 Linuxでは `DISPLAY=:99 XDG_CACHE_HOME=/workspace/.cache XDG_CONFIG_HOME=/workspace/.config` を指定してGUIテストを実行しました。
 
+## Windowsランナーで確認済み
+
+- Electron統合テスト、6件の単体テスト、Webビルドが成功。
+- `node tests/windows-overlay.mjs`: 別プロセスのMicrosoft Edgeを通常/最大化/全画面にし、Windows user32のOS入力でクリック/ホイールを送信。中央（全モード）と可視ゲージ上（最大化/全画面）で背後のEdgeが受信したことを確認。
+- System.DrawingでWindowsデスクトップ全体を撮影し、各モードで上辺・左辺の赤いゲージのピクセルが存在することを確認。Electron内部のスクリーンショットだけではなく、OSの合成結果を検証しています。
+- Windows CIでNSISインストーラーとportable exeの生成・artifact保存が成功。署名・インストーラー自体の実行・アンインストールは未検証。
+- これらはGitHubホストの仮想Windowsデスクトップでの結果であり、Windows 10/11の実機やZoom/PowerPointの結果には相当しません。
+
 ## Windows実機で未完了の必須確認
 
-以下はすべて**未検証**です。CI上のElectronテストが通っても、この表の完了を意味しません。
+以下の**物理Windows PCでの確認は未完了**です。Windowsランナー上のEdge検証が通っても、他アプリや物理構成の完了を意味しません。
 
 | 対象 | 確認内容 | 記録する証拠 |
 | --- | --- | --- |

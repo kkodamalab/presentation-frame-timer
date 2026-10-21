@@ -100,7 +100,7 @@ npm run desktop:win -- --publish never
 ```
 
 `desktop:install` はElectronを公式配布元からチェックサム検証付きで取得します。
-Windows CIはPR/mainで単体テスト、Webビルド、Electron統合テスト、NSIS/portableビルドを実行し、生成物をartifactへ保存します。
+Windows CIはPR/mainで単体テスト、Webビルド、Electron統合テスト、独立したEdgeに対するWindows OS入力とデスクトップ撮影の検証、NSIS/portableビルドを実行し、生成物をartifactへ保存します。
 `v1.1.0` 等のバージョンタグをpushすると、同じ検証後にGitHub Releaseへexeを添付します。
 Web版のPagesデプロイは従来どおり独立して継続します。
 
