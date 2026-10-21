@@ -21,6 +21,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run test:electron
+      - run: node tests/windows-overlay.mjs
       - run: npm run desktop:win -- --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
