@@ -2,7 +2,7 @@
 // physical multi-monitor coverage are deliberately not claimed by this test.
 import {_electron as electron,chromium} from '@playwright/test';
 import {execFileSync} from 'node:child_process';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 if(process.platform!=='win32')throw Error('Windows desktop required');
@@ -41,7 +41,10 @@ try{
   const counts=await page.evaluate(()=>({clicks:window.clicks,wheels:window.wheels}));assert.equal(counts.clicks,points.length,`${windowState} native clicks`);assert.equal(counts.wheels,points.length,`${windowState} native wheels`);
   const output=path.resolve(`test-results/desktop-windows-${windowState}.png`).replaceAll("'","''");
   powershell(`Add-Type -AssemblyName System.Drawing; $b=New-Object System.Drawing.Bitmap(${bounds.width},${bounds.height}); $g=[System.Drawing.Graphics]::FromImage($b); $g.CopyFromScreen(${bounds.x},${bounds.y},0,0,$b.Size); $b.Save('${output}',[System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $b.Dispose();`);
-  results.push({windowState,box,points,...counts});
+  const encoded=(await readFile(path.resolve(`test-results/desktop-windows-${windowState}.png`))).toString('base64');
+  const pixels=await page.evaluate(async encoded=>{const img=new Image();img.src='data:image/png;base64,'+encoded;await img.decode();const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);return [[Math.floor(c.width/2),10],[10,Math.floor(c.height/2)]].map(([x,y])=>[...ctx.getImageData(x,y,1,1).data]);},encoded);
+  for(const pixel of pixels)assert.ok(pixel[0]>240&&pixel[1]<20&&pixel[2]<20,`${windowState} visible red native overlay`);
+  results.push({windowState,box,points,pixels,...counts});
  }
  await writeFile('test-results/desktop-windows-native.json',JSON.stringify({platform:process.platform,bounds,results,notVerified:['Zoom','PowerPoint','physical multi-monitor and hotplug','exclusive fullscreen','audible sound']},null,2));console.log('Windows Edge native input passed',results);
 }finally{if(browser)await browser.close();await app.close();}
