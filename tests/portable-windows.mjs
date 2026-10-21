@@ -22,6 +22,8 @@ try{
  await control.screenshot({path:'test-results/desktop-portable-control.png'});
  await writeFile('test-results/desktop-portable-report.json',JSON.stringify({launch:'actual Presentation-Frame-Timer-Portable.exe',platform:process.platform,checks:['portable extraction/startup','packaged control and overlay windows','start/pause/resume/reset/finish synchronization']},null,2));console.log('Actual Windows portable EXE smoke test passed');
 }finally{
- if(browser){try{const cdp=await browser.newBrowserCDPSession();await cdp.send('Browser.close');}catch{}await browser.close();}
+ // A remote CDP Browser.close may terminate Electron before replying and leave
+ // an unsettled promise. Disconnect first, then terminate only our launcher tree.
+ if(browser)await browser.close();
  if(child.pid){try{execFileSync('taskkill.exe',['/PID',String(child.pid),'/T','/F'],{stdio:'ignore'});}catch{}}
 }
