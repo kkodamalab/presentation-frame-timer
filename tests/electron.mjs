@@ -2,11 +2,11 @@ import {_electron as electron} from '@playwright/test';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 await mkdir('test-results',{recursive:true});
-const launchArgs=['.'];
+const launchArgs=process.env.ELECTRON_EXECUTABLE?[]:['.'];
 // Linux containers may not permit Chromium's user-namespace sandbox. Never
 // pass this flag in the packaged application or on the Windows CI runner.
 if(process.env.ELECTRON_TEST_NO_SANDBOX==='1')launchArgs.unshift('--no-sandbox');
-const app=await electron.launch({args:launchArgs,env:{...process.env},timeout:60000});
+const app=await electron.launch({...(process.env.ELECTRON_EXECUTABLE?{executablePath:process.env.ELECTRON_EXECUTABLE}:{}),args:launchArgs,env:{...process.env},timeout:60000});
 const errors=[];
 try {
  let control,overlay;

@@ -23,7 +23,7 @@ Linuxでは `DISPLAY=:99 XDG_CACHE_HOME=/workspace/.cache XDG_CONFIG_HOME=/works
 - Electron統合テスト、6件の単体テスト、Webビルドが成功。
 - `node tests/windows-overlay.mjs`: 別プロセスのMicrosoft Edgeを通常/最大化/全画面にし、Windows user32のOS入力でクリック/ホイールを送信。中央（全モード）と可視ゲージ上（最大化/全画面）で背後のEdgeが受信したことを確認。
 - System.DrawingでWindowsデスクトップ全体を撮影し、各モードで上辺・左辺の赤いゲージのピクセルが存在することを確認。Electron内部のスクリーンショットだけではなく、OSの合成結果を検証しています。
-- Windows CIでNSISインストーラーとportable exeの生成・artifact保存が成功。署名・インストーラー自体の実行・アンインストールは未検証。
+- Windows CIでNSISインストーラーとportable exeの生成・artifact保存が成功。署名はありません。追加のCIステップで無人インストール後のアプリ統合テストとアンインストールを実行します（対話型の実機インストールは未検証）。
 - これらはGitHubホストの仮想Windowsデスクトップでの結果であり、Windows 10/11の実機やZoom/PowerPointの結果には相当しません。
 
 ## Windows実機で未完了の必須確認

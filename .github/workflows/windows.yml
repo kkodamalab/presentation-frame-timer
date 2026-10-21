@@ -25,6 +25,20 @@ jobs:
       - run: npm run desktop:win -- --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Install and validate packaged application
+        shell: pwsh
+        run: |
+          $installDir = Join-Path $env:RUNNER_TEMP 'FrameTimerInstalled'
+          $setup = Start-Process -FilePath 'release/Presentation-Frame-Timer-Setup.exe' -ArgumentList @('/S', "/D=$installDir") -Wait -PassThru
+          if ($setup.ExitCode -ne 0) { throw "Installer failed: $($setup.ExitCode)" }
+          $env:ELECTRON_EXECUTABLE = Join-Path $installDir 'Presentation Frame Timer.exe'
+          if (!(Test-Path $env:ELECTRON_EXECUTABLE)) { throw 'Installed executable missing' }
+          npm run test:electron
+          if ($LASTEXITCODE -ne 0) { throw 'Installed application checks failed' }
+          $uninstall = Join-Path $installDir 'Uninstall Presentation Frame Timer.exe'
+          if (!(Test-Path $uninstall)) { throw 'Uninstaller missing' }
+          $process = Start-Process -FilePath $uninstall -ArgumentList '/S' -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "Uninstaller failed: $($process.ExitCode)" }
       - uses: actions/upload-artifact@v4
         with:
           name: windows-installers
