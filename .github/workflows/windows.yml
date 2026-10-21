@@ -22,9 +22,25 @@ jobs:
       - run: npm run build
       - run: npm run test:electron
       - run: node tests/windows-overlay.mjs
+      - name: Document PiP in Windows Chrome and Edge
+        shell: pwsh
+        env:
+          PIP_NATIVE_CHECK: '1'
+        run: |
+          $server = Start-Process node -ArgumentList 'server.mjs' -PassThru
+          try {
+            foreach ($channel in @('chrome', 'msedge')) {
+              $env:PIP_CHANNEL = $channel
+              npm run test:pip
+              if ($LASTEXITCODE -ne 0) { throw "Document PiP failed in $channel" }
+            }
+          } finally {
+            Stop-Process -Id $server.Id -ErrorAction SilentlyContinue
+          }
       - run: npm run desktop:win -- --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - run: node tests/portable-windows.mjs
       - name: Install and validate packaged application
         shell: pwsh
         run: |
@@ -50,7 +66,9 @@ jobs:
         if: always()
         with:
           name: desktop-evidence
-          path: test-results/desktop-*
+          path: |
+            test-results/desktop-*
+            test-results/pip-*
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: windows

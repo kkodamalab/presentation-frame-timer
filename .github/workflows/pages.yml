@@ -24,6 +24,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: node server.mjs &
       - run: npm run test:browser
+      - run: xvfb-run --auto-servernum npm run test:pip
       - run: npm run build
       - uses: actions/upload-artifact@v4
         with:
