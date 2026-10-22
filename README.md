@@ -135,3 +135,24 @@ Electronの取得にNodeのプロキシ対応が必要な環境ではNode 24の 
 GUIテストには実際のデスクトップが必要です。LinuxではXorg/Xvfbとウィンドウマネージャーが必要です。既存Chromiumを使う場合は `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`。
 
 詳細な実行結果とWindows実機チェックリストは [docs/windows-validation.md](docs/windows-validation.md) を参照してください。
+
+## v1.2.0：音声とタイマー操作
+
+v1.1.0のElectron操作パネルでは、START等の前に `await AudioContext.resume()` を実行していました。音声デバイスや初期化の状況によってこのPromiseが保留すると、タイマーコマンドまで届かなくなる不具合がありました。v1.2.0ではコマンドを先に送信し、音声の準備・失敗・保留から完全に分離しています。計測は従来どおり実経過時間ベースです。
+
+Web版・Electron版共通で、ブザー（初期値）、ベル／鈴、アラート、犬の鳴き声、チャイム、電子音を選べます。音量は共通の0〜100%（初期値50%）、0%は無音です。「▶ 試聴」は終了音OFFでも使用でき、連打時は前の音を停止して最新の要求だけを再生します。音声を有効にできない場合は専用の警告を表示しますが、START / PAUSE / RESUME / RESETは継続して使用できます。
+
+Electronは音声専用の非表示ウィンドウ（sandbox/contextIsolation有効、nodeIntegration無効）から再生します。操作パネルの×で非表示にしても終了音は継続できます。メインプロセスが終了到達を1回だけ通知し、RESET後に再び通知できます。終了後にパネルを再読込しても終了音を重複送信しません。音声の種類・音量・ON/OFFをElectronのuserData内 `audio-settings.json` に保存し、次回起動に引き継ぎます。その他の設定・タイマー実行状態の再起動時リセットは従来どおりです。
+
+Web版はユーザーのSTART・音ON・試聴クリックで音声を有効にします。音声初期化には1.5秒の上限を設け、拒否・保留・デバイスエラーを警告します。元タブがブラウザに停止された場合の通知の遅延や、自動再生制限は引き続きブラウザに依存します。
+
+5種類はWeb Audio合成音で、保守的な出力ゲインとDynamicsCompressorでピークを制限しています。犬の自然な録音はローカルWAV同梱（CC BY-SA 3.0、Amada44）。6dB減衰・半振幅未満へのピーク制限・フェードを施し、再生ゲインにも上限を設けています。OS側の音量や外部アンプの増幅は別です。
+
+素材の出典、ライセンス、変更内容、SHA-256は [audio/ATTRIBUTION.md](audio/ATTRIBUTION.md) に記載しています。Windows配布には `AUDIO-CREDITS.md` も同梱し、Releaseにも添付します。音声再生時の外部通信は不要です。
+
+```sh
+npm run test:audio:web       # devサーバーが必要
+npm run test:audio:electron  # 実GUIが必要
+```
+
+テストの範囲は [docs/audio-validation.md](docs/audio-validation.md) を参照してください。CIのAPI呼び出し・波形検証は、人間が実スピーカーで音を聴いた確認とは区別します。
