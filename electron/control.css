@@ -2,3 +2,5 @@
 
 #sound-volume-value{font-size:14px}#audio-warning{color:#ffbe8e;font-size:12px}#audio-status{font-size:12px;color:#b2bfd2}
 details .help{overflow-wrap:anywhere}
+
+html{overflow-y:auto}body{min-height:100vh}

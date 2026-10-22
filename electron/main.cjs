@@ -7,15 +7,15 @@ const state=new State();let control,overlay,audioWindow,tray,selected,quitting=f
 let audioStatus={level:'info',message:'音声は試聴・START操作で準備できます。'},audioSettingsFile;
 function loadAudioSettings(){
  audioSettingsFile=path.join(app.getPath('userData'),'audio-settings.json');
- try{const saved=JSON.parse(fs.readFileSync(audioSettingsFile,'utf8'));const patch={};for(const key of ['sound','soundType','soundVolume'])if(Object.hasOwn(saved,key))patch[key]=saved[key];validate(patch);state.update(patch);}
+ try{const saved=JSON.parse(fs.readFileSync(audioSettingsFile,'utf8'));const patch={};for(const key of ['sound','soundType','soundVolume','soundDuration','blink','blinkDuration'])if(Object.hasOwn(saved,key))patch[key]=saved[key];validate(patch);state.update(patch);}
  catch(error){if(error.code!=='ENOENT')audioStatus={level:'warning',message:'音声設定を読み込めなかったため、初期値を使用します。'};}
 }
 function saveAudioSettings(){
- try{const {sound,soundType,soundVolume}=state.settings;fs.mkdirSync(path.dirname(audioSettingsFile),{recursive:true});fs.writeFileSync(audioSettingsFile+'.tmp',JSON.stringify({sound,soundType,soundVolume}),{mode:0o600});fs.renameSync(audioSettingsFile+'.tmp',audioSettingsFile);}
+ try{const {sound,soundType,soundVolume,soundDuration,blink,blinkDuration}=state.settings;fs.mkdirSync(path.dirname(audioSettingsFile),{recursive:true});fs.writeFileSync(audioSettingsFile+'.tmp',JSON.stringify({sound,soundType,soundVolume,soundDuration,blink,blinkDuration}),{mode:0o600});fs.renameSync(audioSettingsFile+'.tmp',audioSettingsFile);}
  catch{audioStatus={level:'warning',message:'音声設定を保存できません。現在のタイマーは継続します。'};}
 }
 function sendAudio(kind){
- const request={kind,id:++audioSequence,soundType:state.settings.soundType,soundVolume:state.settings.soundVolume};
+ const request={kind,id:++audioSequence,soundType:state.settings.soundType,soundVolume:state.settings.soundVolume,soundDuration:state.settings.soundDuration};
  if(!audioWindow||audioWindow.isDestroyed()){audioStatus={level:'warning',message:'音声ウィンドウが利用できません。タイマーは継続します。'};return;}
  if(!audioReady){queuedAudio=request;return;}
  audioWindow.webContents.send('audio:request',request);
@@ -41,8 +41,8 @@ function showControl(){control.show();control.focus();}
 function installIPC(){
  function trusted(event,write=false){const wc=event.sender;const allowed=write?[control]:[control,overlay];if(!allowed.some(w=>w&&w.webContents===wc)||event.senderFrame!==wc.mainFrame)throw Error('Unauthorized sender');}
  ipcMain.handle('timer:get',e=>{trusted(e);return broadcast();});
- ipcMain.handle('timer:command',(e,action)=>{trusted(e,true);state.command(action);return broadcast();});
- ipcMain.handle('timer:settings',(e,patch)=>{trusted(e,true);state.update(patch);if(['sound','soundType','soundVolume'].some(key=>Object.hasOwn(patch,key)))saveAudioSettings();if((Object.hasOwn(patch,'soundVolume')&&patch.soundVolume===0)||(Object.hasOwn(patch,'sound')&&!patch.sound))sendAudio('stop');place();return broadcast();});
+ ipcMain.handle('timer:command',(e,action)=>{trusted(e,true);state.command(action);if(action==='reset')sendAudio('stop');return broadcast();});
+ ipcMain.handle('timer:settings',(e,patch)=>{trusted(e,true);state.update(patch);if(Object.hasOwn(patch,'duration'))sendAudio('stop');if(['sound','soundType','soundVolume','soundDuration','blink','blinkDuration'].some(key=>Object.hasOwn(patch,key)))saveAudioSettings();if((Object.hasOwn(patch,'soundVolume')&&patch.soundVolume===0)||(Object.hasOwn(patch,'sound')&&!patch.sound))sendAudio('stop');place();return broadcast();});
  ipcMain.handle('audio:arm',e=>{trusted(e,true);sendAudio('arm');});
  ipcMain.handle('audio:preview',e=>{trusted(e,true);sendAudio('preview');});
  ipcMain.handle('audio:status',(e,status)=>{if(e.sender!==audioWindow.webContents||e.senderFrame!==e.sender.mainFrame)throw Error('Unauthorized sender');if(!status||!['info','warning'].includes(status.level)||typeof status.message!=='string'||status.message.length>500)throw Error('Invalid audio status');audioStatus={level:status.level,message:status.message};});

@@ -36,7 +36,7 @@ export class WebOverlay {
    this.observer=new win.ResizeObserver(()=>this.paint());this.observer.observe(doc.documentElement);
    this.button.textContent='WEB OVERLAY（表示中）';this.describe('PiPを開きました。サイズ・位置はブラウザの制限内で手動変更してください。閉じても元タブのタイマーは続きます。');
    this.onTick();this.paint();
-   const animate=()=>{if(!this.isOpen||this.window!==win)return;if(this.snapshot?.running)this.onTick();this.frame=win.requestAnimationFrame(animate);};
+   const animate=()=>{if(!this.isOpen||this.window!==win)return;if(this.snapshot?.running||this.snapshot?.blinking)this.onTick();this.frame=win.requestAnimationFrame(animate);};
    this.frame=win.requestAnimationFrame(animate);
   }catch(error){
    if(win&&!win.closed)win.close();if(this.window===win)this.cleanup(win,false);
@@ -55,16 +55,17 @@ export class WebOverlay {
   if(!this.isOpen||!this.snapshot||!this.svg)return;
   const win=this.window,doc=win.document,{settings:s,elapsed,duration,done}=this.snapshot;
   const g=pipGeometry(win.innerWidth,win.innerHeight,elapsed/duration,s.thickness,s.start,s.end);if(!g)return;
-  doc.body.dataset.mode=this.mode.value;doc.body.classList.toggle('blink',done&&s.blink);
+  doc.body.dataset.mode=this.mode.value;doc.body.classList.toggle('blink',this.snapshot.blinking);
   const bg=this.background.value==='transparent'?'transparent':this.background.value==='solid'?this.color.value:'#10141c';
   doc.documentElement.style.background=bg;doc.body.style.background=bg;
   this.svg.setAttribute('viewBox',`0 0 ${g.width} ${g.height}`);this.svg.setAttribute('width',g.width);this.svg.setAttribute('height',g.height);
   this.svg.dataset.progress=String(g.progress);this.svg.dataset.perimeter=String(g.perimeter);this.svg.style.opacity=s.opacity/100;
   const defs=svgNode(doc,'defs'),mask=svgNode(doc,'mask',{id:'pip-mask',maskUnits:'userSpaceOnUse',x:0,y:0,width:g.width,height:g.height});
-  mask.append(svgNode(doc,'path',{d:g.d,fill:'none',stroke:'white','stroke-width':g.thickness,'stroke-linejoin':'round','stroke-linecap':'butt'}));defs.append(mask);
+  mask.append(svgNode(doc,'path',{d:g.d,fill:'white'}));defs.append(mask);
   const field=svgNode(doc,'g',{mask:'url(#pip-mask)'});if(g.progress===0)field.setAttribute('visibility','hidden');
   if(s.mode==='solid')field.append(svgNode(doc,'rect',{width:g.width,height:g.height,fill:s.solid}));
   else{
+   for(const [x,y,i] of [[0,0,0],[g.width/2,0,1],[g.width/2,g.height/2,2],[0,g.height/2,3]])field.append(svgNode(doc,'rect',{x,y,width:g.width/2,height:g.height/2,fill:g.fields[i].stops[0].color}));
    g.fields.forEach((f,i)=>{const gradient=svgNode(doc,'linearGradient',{id:`pip-color-${i}`,gradientUnits:'userSpaceOnUse',x1:f.from[0],y1:f.from[1],x2:f.to[0],y2:f.to[1]});for(const stop of f.stops)gradient.append(svgNode(doc,'stop',{offset:stop.offset,'stop-color':stop.color}));defs.append(gradient);field.append(svgNode(doc,'polygon',{points:f.polygon.map(p=>p.join(',')).join(' '),fill:`url(#pip-color-${i})`}));});
    if(g.startCap)field.append(svgNode(doc,'rect',{width:g.thickness+2,height:g.thickness+2,fill:s.start}));
   }
