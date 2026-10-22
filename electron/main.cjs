@@ -42,7 +42,7 @@ function installIPC(){
  function trusted(event,write=false){const wc=event.sender;const allowed=write?[control]:[control,overlay];if(!allowed.some(w=>w&&w.webContents===wc)||event.senderFrame!==wc.mainFrame)throw Error('Unauthorized sender');}
  ipcMain.handle('timer:get',e=>{trusted(e);return broadcast();});
  ipcMain.handle('timer:command',(e,action)=>{trusted(e,true);state.command(action);return broadcast();});
- ipcMain.handle('timer:settings',(e,patch)=>{trusted(e,true);state.update(patch);if(['sound','soundType','soundVolume'].some(key=>Object.hasOwn(patch,key)))saveAudioSettings();place();return broadcast();});
+ ipcMain.handle('timer:settings',(e,patch)=>{trusted(e,true);state.update(patch);if(['sound','soundType','soundVolume'].some(key=>Object.hasOwn(patch,key)))saveAudioSettings();if((Object.hasOwn(patch,'soundVolume')&&patch.soundVolume===0)||(Object.hasOwn(patch,'sound')&&!patch.sound))sendAudio('stop');place();return broadcast();});
  ipcMain.handle('audio:arm',e=>{trusted(e,true);sendAudio('arm');});
  ipcMain.handle('audio:preview',e=>{trusted(e,true);sendAudio('preview');});
  ipcMain.handle('audio:status',(e,status)=>{if(e.sender!==audioWindow.webContents||e.senderFrame!==e.sender.mainFrame)throw Error('Unauthorized sender');if(!status||!['info','warning'].includes(status.level)||typeof status.message!=='string'||status.message.length>500)throw Error('Invalid audio status');audioStatus={level:status.level,message:status.message};});
