@@ -21,6 +21,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run test:electron
+      - run: npm run test:audio:electron
       - run: node tests/windows-overlay.mjs
       - name: Document PiP in Windows Chrome and Edge
         shell: pwsh
@@ -33,6 +34,8 @@ jobs:
               $env:PIP_CHANNEL = $channel
               npm run test:pip
               if ($LASTEXITCODE -ne 0) { throw "Document PiP failed in $channel" }
+              npm run test:audio:web
+              if ($LASTEXITCODE -ne 0) { throw "Web audio failed in $channel" }
             }
           } finally {
             Stop-Process -Id $server.Id -ErrorAction SilentlyContinue
@@ -69,6 +72,7 @@ jobs:
           path: |
             test-results/desktop-*
             test-results/pip-*
+            test-results/audio-*
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: windows
@@ -76,10 +80,16 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: windows-installers
           path: installers
+      - name: Include audio attribution and checksums
+        run: |
+          cp audio/ATTRIBUTION.md installers/AUDIO-CREDITS.md
+          cd installers
+          sha256sum *.exe > SHA256SUMS.txt
       - uses: softprops/action-gh-release@v2
         with:
           files: installers/*
