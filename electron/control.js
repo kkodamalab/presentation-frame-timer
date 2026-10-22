@@ -13,7 +13,7 @@ function sync(value){state=value;const s=value.settings;$('remaining').textConte
 window.timerAPI.onState(sync);window.timerAPI.get().then(sync);
 document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{run(window.timerAPI.command(b.dataset.action));if(state?.settings.sound&&['start','resume'].includes(b.dataset.action))run(window.timerAPI.armAudio());}));
 $('duration-form').addEventListener('submit',e=>{e.preventDefault();run(window.timerAPI.settings({duration:Number($('duration').value)}));});
-for(const key of ['mode','start','end','solid','thickness','opacity','showTime','visible','blink','sound'])$(key).addEventListener('input',()=>{const e=$(key);run(window.timerAPI.settings({[key]:e.type==='checkbox'?e.checked:['range','number'].includes(e.type)?Number(e.value):e.value}));if(key==='sound'&&e.checked)run(window.timerAPI.armAudio());});
+for(const key of ['mode','start','end','solid','thickness','opacity','showTime','visible','blink','sound','soundDuration','blinkDuration'])$(key).addEventListener('input',()=>{const e=$(key);run(window.timerAPI.settings({[key]:e.type==='checkbox'?e.checked:['range','number'].includes(e.type)?Number(e.value):e.value}));if(key==='sound'&&e.checked)run(window.timerAPI.armAudio());});
 $('display').addEventListener('change',()=>run(window.timerAPI.display(Number($('display').value))));
 
 $('sound-type').addEventListener('input',()=>run(window.timerAPI.settings({soundType:$('sound-type').value})));

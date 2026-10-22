@@ -22,6 +22,7 @@ jobs:
       - run: npm run build
       - run: npm run test:electron
       - run: npm run test:audio:electron
+      - run: node tests/duration-electron.mjs
       - run: node tests/windows-overlay.mjs
       - name: Document PiP in Windows Chrome and Edge
         shell: pwsh
@@ -34,6 +35,8 @@ jobs:
               $env:PIP_CHANNEL = $channel
               npm run test:pip
               if ($LASTEXITCODE -ne 0) { throw "Document PiP failed in $channel" }
+              node tests/v130-browser.mjs
+              if ($LASTEXITCODE -ne 0) { throw "v1.3.0 duration/pixel checks failed in $channel" }
               npm run test:audio:web
               if ($LASTEXITCODE -ne 0) { throw "Web audio failed in $channel" }
             }
@@ -43,6 +46,7 @@ jobs:
       - run: npm run desktop:win -- --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - run: node scripts/inspect-package.mjs
       - run: node tests/portable-windows.mjs
       - name: Install and validate packaged application
         shell: pwsh
@@ -58,12 +62,17 @@ jobs:
           if (!(Test-Path $uninstall)) { throw 'Uninstaller missing' }
           $process = Start-Process -FilePath $uninstall -ArgumentList '/S' -Wait -PassThru
           if ($process.ExitCode -ne 0) { throw "Uninstaller failed: $($process.ExitCode)" }
+      - name: Include screenshots of the actual packaged settings UI
+        shell: pwsh
+        run: Copy-Item 'test-results/desktop-portable-v130-*.png' 'release/'
       - uses: actions/upload-artifact@v4
         with:
           name: windows-installers
           path: |
             release/*.exe
             release/*.blockmap
+            release/PACKAGE-MANIFEST.json
+            release/desktop-portable-v130-*.png
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()

@@ -25,7 +25,7 @@ try{
  browser=await chromium.launch({channel:'msedge',headless:false});const page=await browser.newPage({viewport:null});
  await page.setContent('<html><style>html,body{margin:0;background:#203040;color:white;height:3000px}button{position:fixed;inset:0;border:0;background:transparent;color:white;font:24px sans-serif}</style><button>Independent Edge — native input target</button><script>window.clicks=0;window.wheels=0;document.addEventListener("click",()=>window.clicks++);document.addEventListener("wheel",()=>window.wheels++);</script></html>');
  const cdp=await page.context().newCDPSession(page),{windowId}=await cdp.send('Browser.getWindowForTarget');
- await control.evaluate(async()=>{await window.timerAPI.settings({duration:1,mode:'solid',solid:'#ff0000',thickness:24,opacity:100,showTime:false});await window.timerAPI.command('start');});
+ await control.evaluate(async()=>{await window.timerAPI.settings({duration:1,blink:false,sound:false,visible:true,mode:'solid',solid:'#ff0000',thickness:24,opacity:100,showTime:false});await window.timerAPI.command('start');});
  await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/control.html')).close());
  await new Promise(r=>setTimeout(r,1500));const results=[];
  for(const windowState of ['normal','maximized','fullscreen']){

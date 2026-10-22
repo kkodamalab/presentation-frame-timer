@@ -13,7 +13,7 @@ try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:false,args:['--start-fullscreen']});
  const page=await browser.newPage({viewport:null});await page.setContent('<html><style>html,body{margin:0;background:#203040;color:white;height:3000px}#target{position:fixed;inset:0;background:transparent;color:white;border:0}</style><button id="target">Independent Chromium — native click/scroll target</button><script>window.clicks=0;window.wheels=0;document.addEventListener("click",()=>window.clicks++);document.addEventListener("wheel",()=>window.wheels++);</script></html>');
  const cdp=await page.context().newCDPSession(page);const {windowId}=await cdp.send('Browser.getWindowForTarget');await cdp.send('Browser.setWindowBounds',{windowId,bounds:{windowState:'fullscreen'}});
- await control.evaluate(async()=>{await window.timerAPI.settings({duration:2,mode:'solid',solid:'#ff0000',thickness:20,opacity:100,showTime:false});await window.timerAPI.command('start');});
+ await control.evaluate(async()=>{await window.timerAPI.settings({duration:2,blink:false,sound:false,visible:true,mode:'solid',solid:'#ff0000',thickness:20,opacity:100,showTime:false});await window.timerAPI.command('start');});
  await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().endsWith('/control.html')).close());
  await page.bringToFront();
  await new Promise(r=>setTimeout(r,2500));
