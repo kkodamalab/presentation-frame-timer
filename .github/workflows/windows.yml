@@ -21,6 +21,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run test:electron
+      - run: node tests/v131-electron.mjs
       - run: npm run test:audio:electron
       - run: node tests/duration-electron.mjs
       - run: node tests/windows-overlay.mjs
@@ -37,6 +38,8 @@ jobs:
               if ($LASTEXITCODE -ne 0) { throw "Document PiP failed in $channel" }
               node tests/v130-browser.mjs
               if ($LASTEXITCODE -ne 0) { throw "v1.3.0 duration/pixel checks failed in $channel" }
+              node tests/v131-browser.mjs
+              if ($LASTEXITCODE -ne 0) { throw "v1.3.1 layout/time checks failed in $channel" }
               npm run test:audio:web
               if ($LASTEXITCODE -ne 0) { throw "Web audio failed in $channel" }
             }
@@ -64,7 +67,7 @@ jobs:
           if ($process.ExitCode -ne 0) { throw "Uninstaller failed: $($process.ExitCode)" }
       - name: Include screenshots of the actual packaged settings UI
         shell: pwsh
-        run: Copy-Item 'test-results/desktop-portable-v130-*.png' 'release/'
+        run: Copy-Item 'test-results/desktop-portable-v131-*.png' 'release/'
       - uses: actions/upload-artifact@v4
         with:
           name: windows-installers
@@ -72,7 +75,7 @@ jobs:
             release/*.exe
             release/*.blockmap
             release/PACKAGE-MANIFEST.json
-            release/desktop-portable-v130-*.png
+            release/desktop-portable-v131-*.png
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()

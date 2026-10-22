@@ -1,1 +1,39 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'none'"><title>Frame Timer — 操作</title><link rel="stylesheet" href="control.css"></head><body><h1>FRAME TIMER <small>v1.3.0</small></h1><output id="remaining">10:00</output><p id="status" role="status">待機中</p><form id="duration-form"><label>発表時間（秒、1〜7200）<input id="duration" type="number" min="1" max="7200" value="600" required></label><button>時間を設定・リセット</button></form><div class="actions"><button data-action="start">START</button><button data-action="pause">PAUSE</button><button data-action="resume">RESUME</button><button data-action="reset">RESET</button></div><label>投影先モニター<select id="display"></select></label><label>配色<select id="mode"><option value="gradient">グラデーション</option><option value="solid">単色固定</option></select></label><div class="colors"><label>開始色<input id="start" type="color" value="#4385ff"></label><label>終了色<input id="end" type="color" value="#f45b65"></label><label>単色<input id="solid" type="color" value="#4385ff"></label></div><label>ゲージ太さ（3〜40px）<input id="thickness" type="range" min="3" max="40" value="6"></label><label>ゲージ透明度（不透明度5〜100%）<input id="opacity" type="range" min="5" max="100" value="90"></label><label class="check"><input id="showTime" type="checkbox" checked>残り時間を表示</label><label class="check"><input id="visible" type="checkbox" checked>オーバーレイを表示</label><label class="check"><input id="blink" type="checkbox">終了時に点滅</label><label>点滅時間（秒）<input id="blinkDuration" type="number" min="1" max="60" step="1" value="4"></label><label class="check"><input id="sound" type="checkbox">終了時に効果音</label><label for="sound-type">効果音<select id="sound-type"></select></label><label for="sound-volume">音量 <output id="sound-volume-value">50%</output><input id="sound-volume" type="range" min="0" max="100" value="50"></label><label>効果音の持続時間（秒）<input id="soundDuration" type="number" min="1" max="60" step="1" value="5"></label><button id="sound-preview" type="button">▶ 試聴</button><p id="audio-warning" role="alert"></p><p id="audio-status" role="status"></p><p class="help">効果音OFFでも試聴できます。犬の鳴き声：Amada44 / CC BY-SA 3.0。出典・変更内容は同梱の音声クレジットをご覧ください。</p><details><summary>音声素材のクレジット</summary><p class="help">Barking of a dog.ogg — Amada44<br>https://commons.wikimedia.org/wiki/File:Barking_of_a_dog.ogg<br>CC BY-SA 3.0: https://creativecommons.org/licenses/by-sa/3.0/<br>2.61秒の全体をWAV・モノラルに変換、6dB減衰・ピーク制限・フェード加工。同じCC BY-SA 3.0で再配布。詳細はAUDIO-CREDITS.md。</p></details><p id="error" role="alert"></p><p class="help">閉じると操作パネルだけを隠し、タイマーは継続します。トレイのアイコンから再表示・終了できます。複数画面では操作パネルを投影先以外に移動します。単一画面・複製表示ではSTART後に閉じてください。</p><script type="module" src="control.js"></script></body></html>
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'none'"><title>Frame Timer — 操作</title><link rel="stylesheet" href="control.css"></head>
+<body><div id="control-content">
+<header><div><h1>FRAME TIMER <small>v1.3.1</small></h1><p id="status" role="status">待機中</p></div><output id="remaining">10:00</output></header>
+<main class="settings-grid">
+<section aria-labelledby="timer-heading"><h2 id="timer-heading">タイマーとゲージ</h2>
+<form id="duration-form"><label>発表時間（秒、1〜7200）<input id="duration" type="number" min="1" max="7200" value="600" required></label><button>時間を設定・リセット</button></form>
+<div class="actions"><button data-action="start">START</button><button data-action="pause">PAUSE</button><button data-action="resume">RESUME</button><button data-action="reset">RESET</button></div>
+<label>投影先モニター<select id="display"></select></label>
+<label>配色<select id="mode"><option value="gradient">グラデーション</option><option value="solid">単色固定</option></select></label>
+<div class="colors"><label>開始色<input id="start" type="color" value="#4385ff"></label><label>終了色<input id="end" type="color" value="#f45b65"></label><label>単色<input id="solid" type="color" value="#4385ff"></label></div>
+<label>ゲージ太さ（3〜40px）<input id="thickness" type="range" min="3" max="40" value="6"></label>
+<label>ゲージ透明度（不透明度5〜100%）<input id="opacity" type="range" min="5" max="100" value="90"></label>
+<label class="check"><input id="visible" type="checkbox" checked>オーバーレイを表示</label>
+</section>
+<section aria-labelledby="time-heading"><h2 id="time-heading">残り時間の表示</h2>
+<label class="check"><input id="showTime" type="checkbox" checked>残り時間を表示</label>
+<label>文字サイズ：<output id="fontSize-value">28px</output><input id="fontSize" type="range" min="12" max="120" step="1" value="28"></label>
+<label>文字色<input id="timeColor" type="color" value="#ffffff"></label>
+<label>表示位置<select id="position"></select></label>
+<label>文字透明度：<output id="timeOpacity-value">100%</output><input id="timeOpacity" type="range" min="0" max="100" step="1" value="100"></label>
+<label>画面端の余白：<output id="timeMargin-value">24px</output><input id="timeMargin" type="range" min="0" max="100" step="1" value="24"></label>
+<p class="preview-label">プレビュー（投影画面の縮小図）</p><div id="time-preview" class="time-preview" aria-label="残り時間の表示プレビュー"><div class="preview-screen"><output id="preview-time">10:00</output></div></div>
+<p class="help">文字の透明度はゲージから独立しています。設定中もタイマーは進行します。</p>
+</section>
+<section aria-labelledby="finish-heading"><h2 id="finish-heading">終了時の通知</h2>
+<label class="check"><input id="blink" type="checkbox">終了時に点滅</label>
+<label>点滅時間（秒）<input id="blinkDuration" type="number" min="1" max="60" step="1" value="4"></label>
+<label class="check"><input id="sound" type="checkbox">終了時に効果音</label>
+<label for="sound-type">効果音<select id="sound-type"></select></label>
+<label for="sound-volume">音量 <output id="sound-volume-value">50%</output><input id="sound-volume" type="range" min="0" max="100" value="50"></label>
+<label>効果音の持続時間（秒）<input id="soundDuration" type="number" min="1" max="60" step="1" value="5"></label>
+<button id="sound-preview" type="button">▶ 試聴</button>
+<p id="audio-warning" role="alert"></p><p id="audio-status" role="status"></p>
+<p class="help">効果音OFFでも試聴できます。犬の鳴き声：Amada44 / CC BY-SA 3.0。</p>
+<details><summary>音声素材のクレジット</summary><p class="help">Barking of a dog.ogg — Amada44<br>https://commons.wikimedia.org/wiki/File:Barking_of_a_dog.ogg<br>CC BY-SA 3.0: https://creativecommons.org/licenses/by-sa/3.0/<br>2.61秒の全体をWAV・モノラルに変換、6dB減衰・ピーク制限・フェード加工。同じCC BY-SA 3.0で再配布。詳細はAUDIO-CREDITS.md。</p></details>
+</section></main>
+<p id="error" role="alert"></p><footer class="help">閉じると操作パネルだけを隠し、タイマーは継続します。トレイから再表示・終了できます。サイズと位置、残り時間の表示設定は次回起動時に復元します。</footer>
+</div><script type="module" src="control.js"></script></body></html>

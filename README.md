@@ -169,3 +169,11 @@ npm run test:audio:electron  # 実GUIが必要
 [ポータブル版](https://github.com/kkodamalab/presentation-frame-timer/releases/download/v1.3.0/Presentation-Frame-Timer-Portable.exe) ／ [Setup版](https://github.com/kkodamalab/presentation-frame-timer/releases/download/v1.3.0/Presentation-Frame-Timer-Setup.exe) ／ [Release](https://github.com/kkodamalab/presentation-frame-timer/releases/tag/v1.3.0)。署名なしのためSmartScreenの警告が出る場合があります。配布元とReleaseのSHA-256を確認してください。v1.2.0は引き続き旧Releaseから取得できます。
 
 検証方法と四隅の拡大比較は [v1.3.0検証記録](docs/v1.3.0-validation.md) を参照してください。
+
+## v1.3.1：操作パネルと残り時間表示
+
+操作パネルは作業領域と内容の実測サイズに合わせて起動し、広い画面では3列、小さい画面では2列／1列になります。収まらない場合は縦スクロールでき、リサイズも可能です。手動変更したサイズと位置を次回復元し、モニター切断等で画面外になった場合は補正します。
+
+「残り時間を表示」の下で、文字サイズ12〜120px（初期28）、文字色（初期白）、9位置（初期右上）、文字透明度0〜100%（初期100）、余白0〜100px（初期24）を設定できます。投影画面の縮小プレビューに即時反映し、ゲージの透明度とは独立しています。Web／PiPも同じ設定を使います。小さい表示領域では文字を画面内に収めるため縮小します。設定中もタイマーは進行し、設定は次回へ保存します。
+
+[ポータブル版 v1.3.1](https://github.com/kkodamalab/presentation-frame-timer/releases/download/v1.3.1/Presentation-Frame-Timer-Portable.exe) ／ [Setup版 v1.3.1](https://github.com/kkodamalab/presentation-frame-timer/releases/download/v1.3.1/Presentation-Frame-Timer-Setup.exe) ／ [Release](https://github.com/kkodamalab/presentation-frame-timer/releases/tag/v1.3.1)。旧v1.3.0は保持します。検証範囲・スクリーンショットについては [v1.3.1検証記録](docs/v1.3.1-validation.md) を参照してください。

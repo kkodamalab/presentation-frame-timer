@@ -26,6 +26,7 @@ jobs:
       - run: npm run test:browser
       - run: npm run test:audio:web
       - run: node tests/v130-browser.mjs
+      - run: node tests/v131-browser.mjs
       - run: xvfb-run --auto-servernum npm run test:pip
       - run: npm run build
       - uses: actions/upload-artifact@v4

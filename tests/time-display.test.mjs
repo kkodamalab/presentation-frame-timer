@@ -1,0 +1,15 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {TIME_POSITIONS,timeLayout} from '../time-display.js';
+import {createRequire} from 'node:module';
+const {defaults,validate,State}=createRequire(import.meta.url)('../electron/state.cjs');
+const {validBounds,fitBounds,controlArea,initialBounds}=createRequire(import.meta.url)('../electron/window-geometry.cjs');
+for(const [width,height] of [[1920,1080],[2560,1440],[1080,1920]])for(const scale of [1,1.25,1.5,2])test(`workArea bounds ${width}x${height} at ${scale*100}%`,()=>{
+ const a={x:-Math.round(width/scale),y:35,width:Math.round(width/scale),height:Math.round((height-48)/scale)},d={id:2,workArea:a,scaleFactor:scale};
+ for(const saved of [null,{x:99999,y:-99999,width:3000,height:3000},{x:-400,y:100,width:700,height:500},{x:0,y:0,width:1,height:1}]){
+  const b=initialBounds([d],2,saved);assert.ok(b.x>=a.x&&b.y>=a.y&&b.x+b.width<=a.x+a.width&&b.y+b.height<=a.y+a.height);assert.ok(b.width>=Math.min(480,a.width));
+ }
+});
+test('position restore, disconnection fallback, projection avoidance and invalid saved data',()=>{const left={id:1,workArea:{x:-1920,y:0,width:1920,height:1040}},right={id:2,workArea:{x:0,y:0,width:1920,height:1040}},saved={x:-1800,y:80,width:1000,height:800};assert.deepEqual(initialBounds([left,right],2,saved),saved);assert.equal(controlArea([left,right],null,2).id,1);const corrected=initialBounds([right],2,saved);assert.ok(corrected.x>=0);assert.equal(corrected.width,1000);assert.equal(validBounds({x:NaN,y:0,width:100,height:100}),false);assert.equal(validBounds({x:0,y:0,width:-1,height:0}),false);assert.equal(fitBounds({x:2000,y:2000,width:1000,height:800},right.workArea).x,920);});
+for(const [width,height] of [[1920,1080],[2560,1440],[1080,1920]])for(const fontSize of [12,28,120])for(const margin of [0,24,100])test(`nine text positions ${width}x${height} ${fontSize}px margin ${margin}`,()=>{for(const [position] of TIME_POSITIONS){const b=timeLayout(width,height,fontSize*3.5,fontSize*1.2,position,margin);assert.ok(b.x>=0&&b.y>=0&&b.x+b.width<=width&&b.y+b.height<=height);if(position.endsWith('center'))assert.equal(b.x,(width-b.width)/2);if(position.startsWith('middle'))assert.equal(b.y,(height-b.height)/2);if(position.endsWith('right'))assert.equal(b.x,width-margin-b.width);}});
+test('text settings defaults, independent opacity and v1.3.0 compatibility',()=>{assert.equal(defaults.fontSize,28);assert.equal(defaults.timeColor,'#ffffff');assert.equal(defaults.position,'top-right');assert.equal(defaults.timeMargin,24);assert.equal(defaults.timeOpacity,100);const s=new State(()=>100);s.update({sound:true,soundType:'dog',soundDuration:60,blinkDuration:30});s.command('start');s.update({fontSize:120,timeOpacity:0,opacity:50,position:'middle-center',timeColor:'#ff11aa',timeMargin:100});assert.equal(s.snapshot().running,true);assert.equal(s.settings.opacity,50);assert.equal(s.settings.timeOpacity,0);for(const patch of [{fontSize:11},{fontSize:121},{timeMargin:-1},{timeMargin:101},{timeOpacity:101},{timeOpacity:NaN},{timeColor:'red'},{position:'execute'}])assert.throws(()=>validate(patch));});
