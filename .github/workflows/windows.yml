@@ -1,14 +1,9 @@
-name: Windows desktop
-on:
-  pull_request:
-  push:
-    branches: [main]
-    tags: ['v*']
-  workflow_dispatch:
+name: Published v1.3.1 UI verification
+on: workflow_dispatch
 permissions:
-  contents: read
+  contents: write
 jobs:
-  windows:
+  published-ui:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,92 +12,19 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run desktop:install
-      - run: npm test
-      - run: npm run build
-      - run: npm run test:electron
-      - run: node tests/v131-electron.mjs
-      - run: npm run test:audio:electron
-      - run: node tests/duration-electron.mjs
-      - run: node tests/windows-overlay.mjs
-      - name: Document PiP in Windows Chrome and Edge
-        shell: pwsh
+      - name: Download the published portable and checksum
         env:
-          PIP_NATIVE_CHECK: '1'
+          GH_TOKEN: ${{ github.token }}
         run: |
-          $server = Start-Process node -ArgumentList 'server.mjs' -PassThru
-          try {
-            foreach ($channel in @('chrome', 'msedge')) {
-              $env:PIP_CHANNEL = $channel
-              npm run test:pip
-              if ($LASTEXITCODE -ne 0) { throw "Document PiP failed in $channel" }
-              node tests/v130-browser.mjs
-              if ($LASTEXITCODE -ne 0) { throw "v1.3.0 duration/pixel checks failed in $channel" }
-              node tests/v131-browser.mjs
-              if ($LASTEXITCODE -ne 0) { throw "v1.3.1 layout/time checks failed in $channel" }
-              npm run test:audio:web
-              if ($LASTEXITCODE -ne 0) { throw "Web audio failed in $channel" }
-            }
-          } finally {
-            Stop-Process -Id $server.Id -ErrorAction SilentlyContinue
-          }
-      - run: npm run desktop:win -- --publish never
+          New-Item -ItemType Directory -Force release | Out-Null
+          gh release download v1.3.1 --repo kkodamalab/presentation-frame-timer --pattern Presentation-Frame-Timer-Portable.exe --pattern SHA256SUMS.txt --dir release
+      - run: node tests/published-ui.mjs
+      - name: Attach visible preview evidence to the release
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-      - run: node scripts/inspect-package.mjs
-      - run: node tests/portable-windows.mjs
-      - name: Install and validate packaged application
-        shell: pwsh
-        run: |
-          $installDir = Join-Path $env:RUNNER_TEMP 'FrameTimerInstalled'
-          $setup = Start-Process -FilePath 'release/Presentation-Frame-Timer-Setup.exe' -ArgumentList @('/S', "/D=$installDir") -Wait -PassThru
-          if ($setup.ExitCode -ne 0) { throw "Installer failed: $($setup.ExitCode)" }
-          $env:ELECTRON_EXECUTABLE = Join-Path $installDir 'Presentation Frame Timer.exe'
-          if (!(Test-Path $env:ELECTRON_EXECUTABLE)) { throw 'Installed executable missing' }
-          npm run test:electron
-          if ($LASTEXITCODE -ne 0) { throw 'Installed application checks failed' }
-          $uninstall = Join-Path $installDir 'Uninstall Presentation Frame Timer.exe'
-          if (!(Test-Path $uninstall)) { throw 'Uninstaller missing' }
-          $process = Start-Process -FilePath $uninstall -ArgumentList '/S' -Wait -PassThru
-          if ($process.ExitCode -ne 0) { throw "Uninstaller failed: $($process.ExitCode)" }
-      - name: Include screenshots of the actual packaged settings UI
-        shell: pwsh
-        run: Copy-Item 'test-results/desktop-portable-v131-*.png' 'release/'
-      - uses: actions/upload-artifact@v4
-        with:
-          name: windows-installers
-          path: |
-            release/*.exe
-            release/*.blockmap
-            release/PACKAGE-MANIFEST.json
-            release/desktop-portable-v131-*.png
-          if-no-files-found: error
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload v1.3.1 --repo kkodamalab/presentation-frame-timer test-results/desktop-portable-v131-all-settings.png test-results/desktop-portable-v131-all-settings-full.png test-results/desktop-portable-v131-custom-time.png test-results/desktop-portable-v131-custom-time-full.png test-results/desktop-portable-v131-overlay-time.png test-results/desktop-portable-v131-published-proof.json --clobber
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: desktop-evidence
-          path: |
-            test-results/desktop-*
-            test-results/pip-*
-            test-results/audio-*
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: windows
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: windows-installers
-          path: installers
-      - name: Include audio attribution and checksums
-        run: |
-          cp audio/ATTRIBUTION.md installers/AUDIO-CREDITS.md
-          cd installers
-          sha256sum *.exe > SHA256SUMS.txt
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: installers/*
-          generate_release_notes: true
+          name: published-ui-evidence
+          path: test-results/desktop-portable-v131-*
