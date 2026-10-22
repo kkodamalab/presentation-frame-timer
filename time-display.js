@@ -15,6 +15,7 @@ export function applyTimeDisplay(element,settings,width,height){
  element.hidden=!settings.showTime;
  element.style.fontSize=Math.min(settings.fontSize,Math.max(1,height/1.2),Math.max(1,width/4))+'px';
  element.style.color=settings.timeColor;element.style.opacity=String(settings.timeOpacity/100);
+ element.style.fontVariantNumeric='tabular-nums';
  element.style.margin='0';element.style.boxSizing='border-box';element.style.maxWidth=width+'px';element.style.maxHeight=height+'px';element.style.whiteSpace='nowrap';element.style.overflow='hidden';
  element.style.right='auto';element.style.bottom='auto';element.style.transform='none';
  // Computed CSS dimensions retain subpixel precision and stay unscaled in
