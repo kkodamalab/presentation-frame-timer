@@ -1,3 +1,4 @@
+import {applyTimeDisplay} from './time-display.js';
 import {formatTime} from './core.js';
 import {pipGeometry} from './pip-geometry.js';
 const ns='http://www.w3.org/2000/svg';
@@ -70,8 +71,6 @@ export class WebOverlay {
    if(g.startCap)field.append(svgNode(doc,'rect',{width:g.thickness+2,height:g.thickness+2,fill:s.start}));
   }
   this.svg.replaceChildren(defs,field);
-  this.remaining.textContent=formatTime(duration-elapsed);this.remaining.hidden=!s.showTime;this.remaining.style.opacity=s.opacity/100;
-  this.remaining.style.fontSize=(this.mode.value==='compact'?Math.max(28,s.fontSize*2):s.fontSize)+'px';
-  this.remaining.dataset.position=s.position;
+  this.remaining.textContent=formatTime(duration-elapsed);this.remaining.hidden=!s.showTime;applyTimeDisplay(this.remaining,s,g.width,g.height);
  }
 }

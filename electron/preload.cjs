@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('timerAPI',Object.freeze({
  previewAudio:()=>ipcRenderer.invoke('audio:preview'),
  audioStatus:status=>ipcRenderer.invoke('audio:status',status),
  onAudioRequest:callback=>{const listener=(_e,request)=>callback(request);ipcRenderer.on('audio:request',listener);return ()=>ipcRenderer.removeListener('audio:request',listener);},
+ contentSize:size=>ipcRenderer.invoke('control:content-size',size),
  get:()=>ipcRenderer.invoke('timer:get'),
  command:action=>ipcRenderer.invoke('timer:command',action),
  settings:patch=>ipcRenderer.invoke('timer:settings',patch),
