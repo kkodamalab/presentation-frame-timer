@@ -17,6 +17,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           New-Item -ItemType Directory -Force release | Out-Null
+          $ready=$false
+          for($i=0;$i -lt 100;$i++){
+            $meta=gh release view v1.3.2 --repo kkodamalab/presentation-frame-timer --json assets 2>$null
+            if($LASTEXITCODE -eq 0){
+              $names=@(($meta|ConvertFrom-Json).assets|Where-Object state -eq 'uploaded'|ForEach-Object name)
+              $required=@('Presentation-Frame-Timer-Portable.exe','Presentation-Frame-Timer-Setup.exe','SHA256SUMS.txt','PACKAGE-MANIFEST.json')
+              if(@($required|Where-Object {$_ -notin $names}).Count -eq 0){$ready=$true;break}
+            }
+            Start-Sleep -Seconds 5
+          }
+          if(!$ready){throw 'Public release files did not become available'}
           gh release download v1.3.2 --repo kkodamalab/presentation-frame-timer --pattern '*.exe' --pattern SHA256SUMS.txt --pattern PACKAGE-MANIFEST.json --dir release
           node -e "const fs=require('fs'),c=require('crypto');for(const line of fs.readFileSync('release/SHA256SUMS.txt','utf8').trim().split(/\r?\n/)){const [hash,file]=line.trim().split(/\s+/);if(c.createHash('sha256').update(fs.readFileSync('release/'+file)).digest('hex')!==hash)throw Error('Checksum mismatch: '+file)}"
       - run: node tests/packaged-startup.mjs
