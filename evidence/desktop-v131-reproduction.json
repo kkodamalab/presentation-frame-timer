@@ -4,7 +4,40 @@
   "rows": [
     {
       "name": "clean",
-      "inspectorError": "{\"exceptionId\":1,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"136\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"-2624203947780180135.1.2\"}}",
+      "before": {
+        "rootDrive": "C:",
+        "loading": true,
+        "visible": false,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "unavailable_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "unavailable_software",
+          "webgpu": "unavailable_software",
+          "webnn": "unavailable_software"
+        }
+      },
       "heading": "FRAME TIMER v1.3.1",
       "background": "rgb(16, 24, 39)",
       "dpi": 1,
@@ -31,11 +64,90 @@
         "visible": true
       },
       "normal": true,
-      "finalInspectorError": "{\"exceptionId\":2,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"137\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"-2624203947780180135.1.2\"}}"
+      "after": {
+        "rootDrive": "C:",
+        "urlDrive": "C:",
+        "oldAllows": true,
+        "relativeAllows": true,
+        "loading": false,
+        "visible": true,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [
+            {
+              "code": -3,
+              "desc": "",
+              "main": true,
+              "urlDrive": "C:",
+              "rootDrive": "C:",
+              "oldAllows": true,
+              "relativeAllows": true
+            }
+          ],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "unavailable_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "unavailable_software",
+          "webgpu": "unavailable_software",
+          "webnn": "unavailable_software"
+        }
+      }
     },
     {
       "name": "legacy-v130",
-      "inspectorError": "{\"exceptionId\":1,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"136\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"-287865194501426531.1.2\"}}",
+      "before": {
+        "rootDrive": "C:",
+        "loading": true,
+        "visible": false,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "disabled_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "disabled_off",
+          "webgpu": "disabled_off",
+          "webnn": "disabled_off"
+        }
+      },
       "heading": "FRAME TIMER v1.3.1",
       "background": "rgb(16, 24, 39)",
       "dpi": 1,
@@ -62,11 +174,90 @@
         "visible": true
       },
       "normal": true,
-      "finalInspectorError": "{\"exceptionId\":2,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"137\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"-287865194501426531.1.2\"}}"
+      "after": {
+        "rootDrive": "C:",
+        "urlDrive": "C:",
+        "oldAllows": true,
+        "relativeAllows": true,
+        "loading": false,
+        "visible": true,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [
+            {
+              "code": -3,
+              "desc": "",
+              "main": true,
+              "urlDrive": "C:",
+              "rootDrive": "C:",
+              "oldAllows": true,
+              "relativeAllows": true
+            }
+          ],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "unavailable_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "unavailable_software",
+          "webgpu": "unavailable_software",
+          "webnn": "unavailable_software"
+        }
+      }
     },
     {
       "name": "invalid-window",
-      "inspectorError": "{\"exceptionId\":1,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"137\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"8697482629860037289.1.2\"}}",
+      "before": {
+        "rootDrive": "C:",
+        "loading": true,
+        "visible": false,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "disabled_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "disabled_off",
+          "webgpu": "disabled_off",
+          "webnn": "disabled_off"
+        }
+      },
       "heading": "FRAME TIMER v1.3.1",
       "background": "rgb(16, 24, 39)",
       "dpi": 1,
@@ -93,11 +284,90 @@
         "visible": true
       },
       "normal": true,
-      "finalInspectorError": "{\"exceptionId\":2,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"138\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"8697482629860037289.1.2\"}}"
+      "after": {
+        "rootDrive": "C:",
+        "urlDrive": "C:",
+        "oldAllows": true,
+        "relativeAllows": true,
+        "loading": false,
+        "visible": true,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [
+            {
+              "code": -3,
+              "desc": "",
+              "main": true,
+              "urlDrive": "C:",
+              "rootDrive": "C:",
+              "oldAllows": true,
+              "relativeAllows": true
+            }
+          ],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "unavailable_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "unavailable_software",
+          "webgpu": "unavailable_software",
+          "webnn": "unavailable_software"
+        }
+      }
     },
     {
       "name": "dpi150",
-      "inspectorError": "{\"exceptionId\":1,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"136\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\\n    at Session.<anonymous> (node:electron/js2c/browser_init:1:118549)\\n    at Session.emit (node:events:514:28)\",\"objectId\":\"5059118653688940633.1.2\"}}",
+      "before": {
+        "rootDrive": "C:",
+        "loading": true,
+        "visible": false,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 654,
+          "height": 480
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "disabled_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "disabled_off",
+          "webgpu": "disabled_off",
+          "webnn": "disabled_off"
+        }
+      },
       "heading": "FRAME TIMER v1.3.1",
       "background": "rgb(16, 24, 39)",
       "dpi": 1.5,
@@ -124,17 +394,187 @@
         "visible": true
       },
       "normal": true,
-      "finalInspectorError": "{\"exceptionId\":2,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"137\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"5059118653688940633.1.2\"}}"
+      "after": {
+        "rootDrive": "C:",
+        "urlDrive": "C:",
+        "oldAllows": true,
+        "relativeAllows": true,
+        "loading": false,
+        "visible": true,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 654,
+          "height": 480
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [
+            {
+              "code": -3,
+              "desc": "",
+              "main": true,
+              "urlDrive": "C:",
+              "rootDrive": "C:",
+              "oldAllows": true,
+              "relativeAllows": true
+            }
+          ],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "unavailable_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "unavailable_software",
+          "webgpu": "unavailable_software",
+          "webnn": "unavailable_software"
+        }
+      }
     },
     {
       "name": "lowercase-temp",
-      "inspectorError": "{\"exceptionId\":1,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"136\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"4639812100987622940.1.2\"}}",
-      "error": "browserType.connectOverCDP: Timeout 6000ms exceeded.\nCall log:\n\u001b[2m  - <ws preparing> retrieving websocket url from http://127.0.0.1:9341\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:9341/devtools/browser/dcea34a5-8d1b-4fb7-bfdf-e23cc5a670d9\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:9341/devtools/browser/dcea34a5-8d1b-4fb7-bfdf-e23cc5a670d9\u001b[22m\n",
-      "finalInspectorError": "{\"exceptionId\":2,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"138\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"4639812100987622940.1.2\"}}"
+      "before": {
+        "rootDrive": "c:",
+        "urlDrive": "C:",
+        "oldAllows": false,
+        "relativeAllows": true,
+        "loading": true,
+        "visible": false,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "disabled_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "disabled_off",
+          "webgpu": "disabled_off",
+          "webnn": "disabled_off"
+        }
+      },
+      "error": "No control URL",
+      "after": {
+        "rootDrive": "c:",
+        "urlDrive": "C:",
+        "oldAllows": false,
+        "relativeAllows": true,
+        "loading": false,
+        "visible": true,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [
+            {
+              "code": -20,
+              "desc": "ERR_BLOCKED_BY_CLIENT",
+              "main": true,
+              "urlDrive": "C:",
+              "rootDrive": "c:",
+              "oldAllows": false,
+              "relativeAllows": true
+            }
+          ],
+          "requests": [
+            {
+              "error": "net::ERR_BLOCKED_BY_CLIENT",
+              "resourceType": "mainFrame",
+              "urlDrive": "C:",
+              "rootDrive": "c:",
+              "oldAllows": false,
+              "relativeAllows": true
+            }
+          ],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "unavailable_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "unavailable_software",
+          "webgpu": "unavailable_software",
+          "webnn": "unavailable_software"
+        }
+      }
     },
     {
       "name": "japanese-temp",
-      "inspectorError": "{\"exceptionId\":1,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"136\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"-8929488009660454477.1.2\"}}",
+      "before": {
+        "rootDrive": "C:",
+        "loading": true,
+        "visible": false,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "disabled_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "disabled_off",
+          "webgpu": "disabled_off",
+          "webnn": "disabled_off"
+        }
+      },
       "heading": "FRAME TIMER v1.3.1",
       "background": "rgb(16, 24, 39)",
       "dpi": 1,
@@ -161,13 +601,137 @@
         "visible": true
       },
       "normal": true,
-      "finalInspectorError": "{\"exceptionId\":2,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"137\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"-8929488009660454477.1.2\"}}"
+      "after": {
+        "rootDrive": "C:",
+        "urlDrive": "C:",
+        "oldAllows": true,
+        "relativeAllows": true,
+        "loading": false,
+        "visible": true,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 992,
+          "height": 720
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "unavailable_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "unavailable_software",
+          "webgpu": "unavailable_software",
+          "webnn": "unavailable_software"
+        }
+      }
     },
     {
       "name": "lowercase-japanese-dpi150",
-      "inspectorError": "{\"exceptionId\":1,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"136\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"2124582677500816664.1.2\"}}",
-      "error": "browserType.connectOverCDP: Timeout 6000ms exceeded.\nCall log:\n\u001b[2m  - <ws preparing> retrieving websocket url from http://127.0.0.1:9341\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:9341/devtools/browser/ab3e4c8a-775c-45e5-943a-2346514a2d06\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:9341/devtools/browser/ab3e4c8a-775c-45e5-943a-2346514a2d06\u001b[22m\n",
-      "finalInspectorError": "{\"exceptionId\":2,\"text\":\"Uncaught\",\"lineNumber\":0,\"columnNumber\":921,\"scriptId\":\"138\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"SyntaxError\",\"description\":\"SyntaxError: missing ) after argument list\",\"objectId\":\"2124582677500816664.1.2\"}}"
+      "before": {
+        "rootDrive": "c:",
+        "loading": true,
+        "visible": false,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 654,
+          "height": 480
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [],
+          "requests": [],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "unavailable_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "unavailable_software",
+          "webgpu": "unavailable_software",
+          "webnn": "unavailable_software"
+        }
+      },
+      "error": "browserType.connectOverCDP: Timeout 6000ms exceeded.\nCall log:\n\u001b[2m  - <ws preparing> retrieving websocket url from http://127.0.0.1:9341\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:9341/devtools/browser/eda4072e-b873-4d18-af1f-28b694c3d90b\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:9341/devtools/browser/eda4072e-b873-4d18-af1f-28b694c3d90b\u001b[22m\n",
+      "after": {
+        "rootDrive": "c:",
+        "urlDrive": "C:",
+        "oldAllows": false,
+        "relativeAllows": true,
+        "loading": false,
+        "visible": true,
+        "bounds": {
+          "x": 16,
+          "y": 0,
+          "width": 654,
+          "height": 480
+        },
+        "probe": {
+          "resizes": 0,
+          "errors": [],
+          "failures": [
+            {
+              "code": -20,
+              "desc": "ERR_BLOCKED_BY_CLIENT",
+              "main": true,
+              "urlDrive": "C:",
+              "rootDrive": "c:",
+              "oldAllows": false,
+              "relativeAllows": true
+            }
+          ],
+          "requests": [
+            {
+              "error": "net::ERR_BLOCKED_BY_CLIENT",
+              "resourceType": "mainFrame",
+              "urlDrive": "C:",
+              "rootDrive": "c:",
+              "oldAllows": false,
+              "relativeAllows": true
+            }
+          ],
+          "crashes": []
+        },
+        "gpu": {
+          "2d_canvas": "unavailable_software",
+          "direct_rendering_display_compositor": "disabled_off_ok",
+          "gpu_compositing": "disabled_software",
+          "multiple_raster_threads": "enabled_on",
+          "opengl": "disabled_off",
+          "rasterization": "disabled_software",
+          "raw_draw": "disabled_off_ok",
+          "skia_graphite": "disabled_off",
+          "trees_in_viz": "disabled_off",
+          "video_decode": "disabled_software",
+          "video_encode": "disabled_software",
+          "webgl": "unavailable_software",
+          "webgpu": "unavailable_software",
+          "webnn": "unavailable_software"
+        }
+      }
     }
   ]
 }
