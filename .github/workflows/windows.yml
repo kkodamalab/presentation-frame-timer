@@ -1,9 +1,10 @@
-name: Packaged v1.3.2 startup investigation
+name: Inspect native DPI mapping
 on: workflow_dispatch
 permissions:
   contents: read
+  actions: read
 jobs:
-  packaged:
+  inspect:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -11,16 +12,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run desktop:install
-      - run: npm run desktop:win -- --publish never
-        env:
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-      - run: node tests/packaged-startup.mjs
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - uses: actions/download-artifact@v4
         with:
           name: startup-investigation
-          path: |
-            release/*.exe
-            test-results/desktop-*
+          run-id: 43137715751
+          github-token: ${{ github.token }}
+      - run: node tests/dpi-mapping.mjs
