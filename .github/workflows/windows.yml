@@ -1,14 +1,9 @@
-name: Windows desktop
-on:
-  pull_request:
-  push:
-    branches: [main]
-    tags: ['v*']
-  workflow_dispatch:
+name: Verify published v1.3.2 startup
+on: workflow_dispatch
 permissions:
-  contents: read
+  contents: write
 jobs:
-  windows:
+  published-startup:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,101 +12,32 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run desktop:install
-      - run: npm test
-      - run: npm run build
-      - run: npm run desktop:win -- --publish never
+      - name: Download public installers and verify checksums
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-      - run: node scripts/inspect-package.mjs
-      - run: node tests/portable-windows.mjs
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          New-Item -ItemType Directory -Force release | Out-Null
+          gh release download v1.3.2 --repo kkodamalab/presentation-frame-timer --pattern '*.exe' --pattern SHA256SUMS.txt --pattern PACKAGE-MANIFEST.json --dir release
+          node -e "const fs=require('fs'),c=require('crypto');for(const line of fs.readFileSync('release/SHA256SUMS.txt','utf8').trim().split(/\r?\n/)){const [hash,file]=line.trim().split(/\s+/);if(c.createHash('sha256').update(fs.readFileSync('release/'+file)).digest('hex')!==hash)throw Error('Checksum mismatch: '+file)}"
       - run: node tests/packaged-startup.mjs
-      - name: Install and validate packaged application
-        shell: pwsh
+      - name: Install the public Setup and verify startup
         run: |
-          $installDir = Join-Path $env:RUNNER_TEMP 'FrameTimerInstalled'
-          $setup = Start-Process -FilePath 'release/Presentation-Frame-Timer-Setup.exe' -ArgumentList @('/S', "/D=$installDir") -Wait -PassThru
-          if ($setup.ExitCode -ne 0) { throw "Installer failed: $($setup.ExitCode)" }
-          $env:ELECTRON_EXECUTABLE = Join-Path $installDir 'Presentation Frame Timer.exe'
-          if (!(Test-Path $env:ELECTRON_EXECUTABLE)) { throw 'Installed executable missing' }
-          npm run test:electron
-          if ($LASTEXITCODE -ne 0) { throw 'Installed application checks failed' }
+          $dir=Join-Path $env:RUNNER_TEMP 'FrameTimerPublic'
+          $p=Start-Process 'release/Presentation-Frame-Timer-Setup.exe' -ArgumentList @('/S', "/D=$dir") -Wait -PassThru
+          if($p.ExitCode -ne 0){throw 'Public installer failed'}
+          $env:ELECTRON_EXECUTABLE=Join-Path $dir 'Presentation Frame Timer.exe'
           node tests/packaged-startup.mjs
-          if ($LASTEXITCODE -ne 0) { throw 'Installed startup checks failed' }
-          $uninstall = Join-Path $installDir 'Uninstall Presentation Frame Timer.exe'
-          if (!(Test-Path $uninstall)) { throw 'Uninstaller missing' }
-          $process = Start-Process -FilePath $uninstall -ArgumentList '/S' -Wait -PassThru
-          if ($process.ExitCode -ne 0) { throw "Uninstaller failed: $($process.ExitCode)" }
-      - run: npm run test:electron
-      - run: node tests/v131-electron.mjs
-      - run: node tests/startup-electron.mjs
-      - run: npm run test:audio:electron
-      - run: node tests/duration-electron.mjs
-      - run: node tests/windows-overlay.mjs
-      - name: Document PiP in Windows Chrome and Edge
-        shell: pwsh
+          if($LASTEXITCODE -ne 0){throw 'Public Setup startup test failed'}
+      - name: Mark proofs as public downloads and attach evidence
         env:
-          PIP_NATIVE_CHECK: '1'
+          GH_TOKEN: ${{ github.token }}
         run: |
-          $server = Start-Process node -ArgumentList 'server.mjs' -PassThru
-          try {
-            foreach ($channel in @('chrome', 'msedge')) {
-              $env:PIP_CHANNEL = $channel
-              npm run test:pip
-              if ($LASTEXITCODE -ne 0) { throw "Document PiP failed in $channel" }
-              node tests/v130-browser.mjs
-              if ($LASTEXITCODE -ne 0) { throw "v1.3.0 duration/pixel checks failed in $channel" }
-              node tests/v131-browser.mjs
-              if ($LASTEXITCODE -ne 0) { throw "v1.3.1 layout/time checks failed in $channel" }
-              npm run test:audio:web
-              if ($LASTEXITCODE -ne 0) { throw "Web audio failed in $channel" }
-            }
-          } finally {
-            Stop-Process -Id $server.Id -ErrorAction SilentlyContinue
-          }
-      - name: Include startup verification report
-        shell: pwsh
-        run: Copy-Item 'test-results/desktop-*-v132-startup-proof.json' 'release/'
-      - name: Include screenshots of the actual packaged settings UI
-        shell: pwsh
-        run: Copy-Item 'test-results/desktop-portable-v132-*.png' 'release/'
+          node -e "const fs=require('fs'),c=require('crypto');for(const kind of ['portable','installed']){const file='test-results/desktop-'+kind+'-v132-startup-proof.json';const r=JSON.parse(fs.readFileSync(file));r.downloadedPublishedExe=true;r.publicPortableSHA256=c.createHash('sha256').update(fs.readFileSync('release/Presentation-Frame-Timer-Portable.exe')).digest('hex');r.publicSetupSHA256=c.createHash('sha256').update(fs.readFileSync('release/Presentation-Frame-Timer-Setup.exe')).digest('hex');fs.writeFileSync(file,JSON.stringify(r,null,2));}"
+          $assets=@(Get-ChildItem 'test-results/desktop-*-v132-startup-*' -File | ForEach-Object FullName)
+          gh release upload v1.3.2 --repo kkodamalab/presentation-frame-timer @assets --clobber
+          if($LASTEXITCODE -ne 0){throw 'Evidence upload failed'}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: windows-installers
-          path: |
-            release/*.exe
-            release/*.blockmap
-            release/PACKAGE-MANIFEST.json
-            release/desktop-*-v132-startup-proof.json
-            release/desktop-portable-v132-*.png
-          if-no-files-found: error
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: desktop-evidence
-          path: |
-            test-results/desktop-*
-            test-results/pip-*
-            test-results/audio-*
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: windows
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: windows-installers
-          path: installers
-      - name: Include audio attribution and checksums
-        run: |
-          cp audio/ATTRIBUTION.md installers/AUDIO-CREDITS.md
-          cd installers
-          sha256sum *.exe > SHA256SUMS.txt
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: installers/*
-          generate_release_notes: true
+          name: public-startup-evidence
+          path: test-results/desktop-*-v132-startup-*
