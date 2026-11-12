@@ -19,7 +19,11 @@ function scheduleBoundsSave(){clearTimeout(boundsTimer);boundsTimer=setTimeout(s
 function applyControlBounds(bounds,area){
  const next=fitBounds(bounds,area),current=control.getBounds();expectedSize=next;
  if(['x','y','width','height'].every(k=>Math.abs(current[k]-next[k])<=1))return false;
- settingBounds=true;try{const minimum=[Math.min(480,area.width),Math.min(320,area.height)];if(control.getMinimumSize().some((v,i)=>v!==minimum[i]))control.setMinimumSize(...minimum);control.setBounds(next);}finally{settingBounds=false;}return true;
+ settingBounds=true;try{const minimum=[Math.min(480,area.width),Math.min(320,area.height)];if(control.getMinimumSize().some((v,i)=>v!==minimum[i]))control.setMinimumSize(...minimum);
+ let command={...next};for(let pass=0;pass<3;pass++){control.setBounds(command);if(process.platform!=='win32')break;const actual=control.getBounds();if(['x','y','width','height'].every(k=>Math.abs(actual[k]-next[k])<=1))break;
+ log('native-bounds-correction',{pass,target:next,actual});command={x:command.x+next.x-actual.x,y:command.y+next.y-actual.y,width:Math.max(1,command.width+next.width-actual.width),height:Math.max(1,command.height+next.height-actual.height)};
+ }
+ }finally{settingBounds=false;}return true;
 }
 function fitContent(height){
  if(!Number.isFinite(height)||height<1||height>20000){log('layout-fallback',{reason:'invalid-content-height'});return;}
