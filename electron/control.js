@@ -13,10 +13,24 @@ function sync(value){state=value;const s=value.settings;$('remaining').textConte
  preview();
  const audio=value.audioStatus;if(audio){$('audio-warning').textContent=audio.level==='warning'?audio.message:'';$('audio-status').textContent=audio.level==='info'?audio.message:'';}
 }
-let layoutReady=false;function reportSize(){if(layoutReady)window.timerAPI.contentSize({height:Math.ceil($('control-content').getBoundingClientRect().height+32)}).catch(e=>{$('error').textContent=e.message;});}
-window.timerAPI.onState(sync);window.timerAPI.get().then(value=>{sync(value);document.fonts.ready.then(()=>requestAnimationFrame(()=>{layoutReady=true;reportSize();}));});
-new ResizeObserver(reportSize).observe($('control-content'));
-new ResizeObserver(preview).observe($('time-preview'));
+function measureContent(){try{const height=Math.ceil($('control-content').getBoundingClientRect().height+32);return Number.isFinite(height)&&height>0?height:0;}catch{return 0;}}
+let layoutReady=false,lastHeight=0,layoutTimer;
+function reportSize(){if(!layoutReady)return;clearTimeout(layoutTimer);layoutTimer=setTimeout(()=>{const height=measureContent();if(Math.abs(height-lastHeight)<=1)return;lastHeight=height;window.timerAPI.contentSize({height}).catch(e=>{$('error').textContent=e.message;});},100);}
+async function initialize(){let token;try{
+ if(!window.timerAPI?.startupReady)throw Error('PRELOAD_UNAVAILABLE');
+ const value=await Promise.race([window.timerAPI.get(),new Promise((_,reject)=>setTimeout(()=>reject(Error('IPC_TIMEOUT')),2500))]);token=value.startupToken;
+ sync(value);await Promise.race([document.fonts.ready,new Promise(resolve=>setTimeout(resolve,500))]);
+ if(getComputedStyle(document.documentElement).getPropertyValue('--frame-timer-theme').trim()!=='ready')throw Error('CONTROL_CSS_UNAVAILABLE');
+ for(const id of ['control-content','duration','display','fontSize','timeColor','position','timeOpacity','timeMargin','sound-type','soundDuration','blinkDuration','sound-preview'])if(!$(id))throw Error('CONTROL_ELEMENT_MISSING: '+id);
+ await new Promise(resolve=>{const timeout=setTimeout(resolve,100);requestAnimationFrame(()=>requestAnimationFrame(()=>{clearTimeout(timeout);resolve();}));});
+ lastHeight=measureContent();
+ document.documentElement.dataset.uiState='ready';
+ await window.timerAPI.startupReady({token,height:lastHeight,theme:'dark'});
+ layoutReady=true;
+ new ResizeObserver(reportSize).observe($('control-content'));
+ new ResizeObserver(preview).observe($('time-preview'));
+ }catch(error){document.documentElement.dataset.uiState='failed';if($('error'))$('error').textContent='操作画面の初期化に失敗しました。診断画面をご確認ください。';window.timerAPI?.startupFailed?.({token,code:String(error.message).slice(0,300)});}}
+window.timerAPI.onState(sync);void initialize();
 document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{run(window.timerAPI.command(b.dataset.action));if(state?.settings.sound&&['start','resume'].includes(b.dataset.action))run(window.timerAPI.armAudio());}));
 $('duration-form').addEventListener('submit',e=>{e.preventDefault();run(window.timerAPI.settings({duration:Number($('duration').value)}));});
 for(const key of ['mode','start','end','solid','thickness','opacity','showTime','visible','blink','sound','soundDuration','blinkDuration','fontSize','timeColor','position','timeOpacity','timeMargin'])$(key).addEventListener('input',()=>{const e=$(key);run(window.timerAPI.settings({[key]:e.type==='checkbox'?e.checked:['range','number'].includes(e.type)?Number(e.value):e.value}));if(key==='sound'&&e.checked)run(window.timerAPI.armAudio());});

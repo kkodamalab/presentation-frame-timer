@@ -22,6 +22,7 @@ jobs:
       - run: npm run build
       - run: npm run test:electron
       - run: node tests/v131-electron.mjs
+      - run: node tests/startup-electron.mjs
       - run: npm run test:audio:electron
       - run: node tests/duration-electron.mjs
       - run: node tests/windows-overlay.mjs
@@ -51,6 +52,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - run: node scripts/inspect-package.mjs
       - run: node tests/portable-windows.mjs
+      - run: node tests/packaged-startup.mjs
       - name: Install and validate packaged application
         shell: pwsh
         run: |
@@ -61,13 +63,18 @@ jobs:
           if (!(Test-Path $env:ELECTRON_EXECUTABLE)) { throw 'Installed executable missing' }
           npm run test:electron
           if ($LASTEXITCODE -ne 0) { throw 'Installed application checks failed' }
+          node tests/packaged-startup.mjs
+          if ($LASTEXITCODE -ne 0) { throw 'Installed startup checks failed' }
           $uninstall = Join-Path $installDir 'Uninstall Presentation Frame Timer.exe'
           if (!(Test-Path $uninstall)) { throw 'Uninstaller missing' }
           $process = Start-Process -FilePath $uninstall -ArgumentList '/S' -Wait -PassThru
           if ($process.ExitCode -ne 0) { throw "Uninstaller failed: $($process.ExitCode)" }
+      - name: Include startup verification report
+        shell: pwsh
+        run: Copy-Item 'test-results/desktop-*-v132-startup-proof.json' 'release/'
       - name: Include screenshots of the actual packaged settings UI
         shell: pwsh
-        run: Copy-Item 'test-results/desktop-portable-v131-*.png' 'release/'
+        run: Copy-Item 'test-results/desktop-portable-v132-*.png' 'release/'
       - uses: actions/upload-artifact@v4
         with:
           name: windows-installers
@@ -75,7 +82,8 @@ jobs:
             release/*.exe
             release/*.blockmap
             release/PACKAGE-MANIFEST.json
-            release/desktop-portable-v131-*.png
+            release/desktop-*-v132-startup-proof.json
+            release/desktop-portable-v132-*.png
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()

@@ -177,3 +177,11 @@ npm run test:audio:electron  # 実GUIが必要
 「残り時間を表示」の下で、文字サイズ12〜120px（初期28）、文字色（初期白）、9位置（初期右上）、文字透明度0〜100%（初期100）、余白0〜100px（初期24）を設定できます。投影画面の縮小プレビューに即時反映し、ゲージの透明度とは独立しています。Web／PiPも同じ設定を使います。小さい表示領域では文字を画面内に収めるため縮小します。設定中もタイマーは進行し、設定は次回へ保存します。
 
 [ポータブル版 v1.3.1](https://github.com/kkodamalab/presentation-frame-timer/releases/download/v1.3.1/Presentation-Frame-Timer-Portable.exe) ／ [Setup版 v1.3.1](https://github.com/kkodamalab/presentation-frame-timer/releases/download/v1.3.1/Presentation-Frame-Timer-Setup.exe) ／ [Release](https://github.com/kkodamalab/presentation-frame-timer/releases/tag/v1.3.1)。旧v1.3.0は保持します。検証範囲・スクリーンショットについては [v1.3.1検証記録](docs/v1.3.1-validation.md) を参照してください。
+
+## v1.3.2：白画面からの復旧と起動診断
+
+WindowsのTEMPパスとChromiumのファイルURLでドライブ表記の大小文字が違うと、旧版が操作画面のHTMLを誤って拒否する白画面を修正しました。UI初期化を確認してから表示し、読み込み失敗は1回再試行した後、診断画面に切り替えます。サイズ・文字表示・音声などv1.3.1の機能は維持します。
+
+再発時はトレイの「診断ログを開く」から `diagnostics/startup.log` を確認してください。「ウィンドウ配置だけ初期化」は配置ファイルだけを退避し、音声・表示設定を削除しません。ログの自動送信はありません。[原因・再現条件・検証範囲](docs/v1.3.2-startup.md) を参照してください。
+
+[Portable v1.3.2](https://github.com/kkodamalab/presentation-frame-timer/releases/download/v1.3.2/Presentation-Frame-Timer-Portable.exe) ／ [Setup v1.3.2](https://github.com/kkodamalab/presentation-frame-timer/releases/download/v1.3.2/Presentation-Frame-Timer-Setup.exe) ／ [Release](https://github.com/kkodamalab/presentation-frame-timer/releases/tag/v1.3.2)。旧v1.3.1／v1.3.0は保持します。
