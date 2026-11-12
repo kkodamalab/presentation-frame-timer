@@ -20,7 +20,7 @@ try{
   await fault(mode);
   if(mode==='delay'){await wait(150);const hidden=await probe(()=>!process.mainModule.require('electron').BrowserWindow.getAllWindows().find(w=>w.id===globalThis.__testControlId).isVisible());assert.equal(hidden,true);await healthy();control=await reconnect();reports.push({name:'delayed-load',hiddenUntilInitialized:true});continue;}
   const code=await until(()=>probe(async()=>{const w=process.mainModule.require('electron').BrowserWindow.getAllWindows().find(w=>w.getTitle()==='Frame Timer — 起動エラー');if(!w)return false;try{return await w.webContents.executeJavaScript("document.querySelector('#failure-code')?.textContent");}catch{return false;}}),30000);
-  const errorPage=context.pages().find(p=>p.url().startsWith('data:text/html'));if(errorPage)await screenshot(errorPage,'error-'+mode);
+  const errorPage=await until(()=>context.pages().find(p=>p.url().startsWith('data:text/html')));await screenshot(errorPage,'error-'+mode);
   const hidden=await probe(()=>!process.mainModule.require('electron').BrowserWindow.getAllWindows().find(w=>w.id===globalThis.__testControlId).isVisible());assert.equal(hidden,true);reports.push({name:'load-failure-'+mode,code,hiddenControl:true});console.log('FAILURE HANDLED',mode,code);
   await probe(()=>{globalThis.__startupFault='';const w=process.mainModule.require('electron').BrowserWindow.getAllWindows().find(w=>w.getTitle()==='Frame Timer — 起動エラー');void w.webContents.executeJavaScript("document.querySelector('#retry').click()",true);});await healthy();control=await reconnect();assert.equal((await status()).state.settings.soundVolume,37);
  }
