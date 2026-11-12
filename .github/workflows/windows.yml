@@ -76,6 +76,7 @@ jobs:
         shell: pwsh
         run: Copy-Item 'test-results/desktop-portable-v132-*.png' 'release/'
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: windows-installers
           path: |

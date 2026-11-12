@@ -84,8 +84,16 @@ function loadControl(reset=false){
  layoutBudget.reset();autoFitControl=!userSized;control.hide();const token=startup.begin(reset);
  control.loadFile(path.join(__dirname,'control.html')).catch(error=>startup.fail('LOAD_FILE_REJECTED',{message:error.message},token));
 }
+function showInitializedControl(){
+ // Windows can add DPI-dependent nonclient insets when a hidden HWND is first
+ // mapped. Reapply the intended outer DIP bounds after mapping, before reporting
+ // startup ready to callers. Do not interpret this adjustment as a user resize.
+ const wanted=control.getBounds(),area=controlArea(screen.getAllDisplays(),wanted,selected).workArea;
+ settingBounds=true;try{control.show();const mapped=control.getBounds();if(['x','y','width','height'].some(k=>Math.abs(mapped[k]-wanted[k])>1))log('post-show-bounds',{wanted,mapped});applyControlBounds(wanted,area);}finally{settingBounds=false;}
+ saveControlBounds();broadcast();
+}
 function watchControl(){
- startup=new Startup({log,onReady:()=>{control.show();saveControlBounds();broadcast();},onRetry:code=>{control.hide();log('startup-retry',{code});if(['RENDERER_UNRESPONSIVE','UI_TIMEOUT'].includes(code)&&!control.webContents.isDestroyed()){expectedControlCrash=true;try{control.webContents.forcefullyCrashRenderer();}catch{expectedControlCrash=false;}}loadControl();},onFailure:showRecovery});
+ startup=new Startup({log,onReady:showInitializedControl,onRetry:code=>{control.hide();log('startup-retry',{code});if(['RENDERER_UNRESPONSIVE','UI_TIMEOUT'].includes(code)&&!control.webContents.isDestroyed()){expectedControlCrash=true;try{control.webContents.forcefullyCrashRenderer();}catch{expectedControlCrash=false;}}loadControl();},onFailure:showRecovery});
  control.once('ready-to-show',()=>log('ready-to-show',{readinessProof:false}));
  const wc=control.webContents;
  wc.on('did-start-navigation',(_e,url,inPlace,isMainFrame)=>{if(isMainFrame&&!inPlace&&startup.state==='ready'){control.hide();layoutBudget.reset();startup.begin();}if(isMainFrame)log('navigation-start',{url});});
